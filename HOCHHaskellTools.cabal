@@ -1,0 +1,66 @@
+name:                HOCHHaskellTools
+version:             0.1.0.0
+synopsis:            Initial project template from stack
+description:         Please see README.md
+homepage:            https://github.com/valecs/PhaseSpaceRoamingFrac#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Vale Cofer-Shabica
+maintainer:          vale.cofershabica@gmail.com
+copyright:           Copyleft
+category:            Science
+build-type:          Configure
+cabal-version:       >=1.10
+
+extra-source-files:  src/aux/Makefile
+                     src/aux/potentialFFI.c
+                     src/aux/potentialFFI.h
+                     src/aux/jbowman/*.f
+
+                     
+library
+  hs-source-dirs:    src
+  exposed-modules:   PhaseSpaceSums
+                     -- Formaldehyde.Invariant
+                     Formaldehyde.RoamingRegion
+                     Formaldehyde.BirdsNest
+                     Formaldehyde.Potential
+                     Formaldehyde.Properties
+                     Formaldehyde.Helpers
+                     Formaldehyde.Data
+  build-depends:     base >=4.7 && <5, hmatrix >=0.16, vector
+  default-language:  Haskell2010
+  ghc-options:       -Wall -O2
+  extra-libraries:   HOCHPotential
+-- The location of HOCHPotential is set up by the configure script in a .buildinfo file
+  
+executable PhaseSpaceRoamingFrac-exe
+  hs-source-dirs:      app
+  main-is:             PhaseSpaceRoamingFrac.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , hmatrix
+                     , HOCHHaskellTools
+  default-language:    Haskell2010
+
+executable PhaseSpaceBirdFrac-exe
+  hs-source-dirs:      app
+  main-is:             PhaseSpaceBirdFrac.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , hmatrix
+                     , HOCHHaskellTools
+  default-language:    Haskell2010
+
+test-suite PhaseSpaceRoamingFrac-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , HOCHHaskellTools
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/valecs/PhaseSpaceRoamingFrac

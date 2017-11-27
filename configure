@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+# Script to build libHOCHPotential; this is an abuse of the build
+# system, but at least it makes things a bit more portable/complete.
+
+readonly pkg_full=$(find . -maxdepth 1 -name \*.cabal -printf %f)
+readonly buildinfo=${pkg_full%.cabal}.buildinfo
+
+readonly auxdir="src/aux"
+readonly pwd=$(pwd)
+
+cd $auxdir
+make
+
+cd $pwd
+
+echo
+echo "Writing library location info to $buildinfo"
+echo "extra-lib-dirs: $pwd/$auxdir" > $buildinfo
