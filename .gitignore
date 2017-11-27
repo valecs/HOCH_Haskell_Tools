@@ -3,6 +3,9 @@ dist-*
 cabal-dev
 .#*
 *.o
+*.a
+*.so
+*.so.*
 *.hi
 *.chi
 *.chs.h
