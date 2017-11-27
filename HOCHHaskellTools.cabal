@@ -2,7 +2,7 @@ name:                HOCHHaskellTools
 version:             0.1.0.0
 synopsis:            Initial project template from stack
 description:         Please see README.md
-homepage:            https://github.com/valecs/PhaseSpaceRoamingFrac#readme
+homepage:            https://github.com/valecs/HOCH_Haskell_Tools
 license:             BSD3
 license-file:        LICENSE
 author:              Vale Cofer-Shabica
@@ -17,7 +17,6 @@ extra-source-files:  src/aux/Makefile
                      src/aux/potentialFFI.h
                      src/aux/jbowman/*.f
 
-                     
 library
   hs-source-dirs:    src
   exposed-modules:   PhaseSpaceSums
@@ -63,4 +62,4 @@ test-suite PhaseSpaceRoamingFrac-test
 
 source-repository head
   type:     git
-  location: https://github.com/valecs/PhaseSpaceRoamingFrac
+  location: https://github.com/valecs/HOCH_Haskell_Tools
