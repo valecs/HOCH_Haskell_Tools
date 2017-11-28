@@ -1,6 +1,7 @@
 module Formaldehyde.Helpers (
   readPath
   ,readTrajectory
+  ,readTrajectoryTimes
   ,fileInput
   ,(#), (##@), (##), (##$)
   ,cm, mass
@@ -97,3 +98,13 @@ toVectorsWith _ _ [] = []
 toVectorsWith k n xs = let (as',bs) = splitAt (n+k) xs
                            as = drop k as'
                        in (n|>) as : toVectorsWith k n bs
+
+readTrajectoryTimes :: String -> [(Double, Vector Double)]
+readTrajectoryTimes = loadTrajectoryTimes.(map read).lines
+
+loadTrajectoryTimes :: [Double] -> [(Double, Vector Double)]
+loadTrajectoryTimes [] = []
+loadTrajectoryTimes xs = (t, (n|>) g) : loadTrajectoryTimes vs
+  where n = 24
+        (v1, vs) = splitAt (n+1) xs
+        ([t], g) = splitAt 1 v1
