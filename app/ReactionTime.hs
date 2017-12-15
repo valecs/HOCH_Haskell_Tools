@@ -40,7 +40,7 @@ predicateBuilder c l =
 -- returns the last frame (counting in reverse) for which predicate is true 
 findReactionTime :: (Vector Double -> Bool) -> [(Double, Vector Double)] -> Double
 findReactionTime p vs = case lastTruth (snd . CA.second p) (reverse vs) of
-  Nothing -> 0.0
+  Nothing -> (-1) --this isn't correct, but provides a sentinel value
   Just a  -> fst a
 
 -- returns the the last a s.t. the predicate is true
@@ -59,11 +59,14 @@ readC :: String -> Channel
 readC s
   | any ($ s) [(=="D"), (=="direct").toLower'  ] = Direct
   | any ($ s) [(=="A"), (=="radical").toLower' ] = Radical
-  | any ($ s) [(=="R"), (=="roaming").toLower' ] = Roaming
+  | any ($ s) [(=="R"), (=="roaming").toLower', (=="roam").toLower' ] = Roaming
   | otherwise   = undefined
   where
     toLower' = map Data.Char.toLower
 
+-- Load arguments from command line. Expected to be like:
+-- ReactionTime-exe { D | A | R } rLim < trajectory
+-- errors out otherwise
 readArgs :: IO Config
 readArgs = do
   [c', l'] <- SE.getArgs
@@ -71,5 +74,4 @@ readArgs = do
     c = readC c'
     l = read l'
     in return $ Config c l
-
  
