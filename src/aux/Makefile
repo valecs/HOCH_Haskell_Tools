@@ -2,14 +2,14 @@ LIBRARY := HOCHPotential
 LIBVER := 1
 
 SHELL = /bin/sh
-CC := gcc-6.2
-FC := gfortran-6.2
+CC := gcc
+FC := gfortran
 
 FFLAGS := -O3 -fpic
 CFLAGS:=-std=c99 -Werror -pedantic -Wall -W -Wmissing-prototypes -Wstrict-prototypes -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wnested-externs -fshort-enums -fno-common -g -O4 -DHAVE_INLINE -fpic
 HFLAGS:=-Wall
 
-LDFLAGS:= -L/home/vale/toor/lib -L/home/vale/toor/lib64 -lm -lgfortran
+LDFLAGS:=  -lm -lgfortran
 
 SOURCES := potentialFFI.c
 HEADERS := potentialFFI.h
