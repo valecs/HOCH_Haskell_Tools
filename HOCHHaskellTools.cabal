@@ -20,7 +20,7 @@ extra-source-files:  src/aux/Makefile
 library
   hs-source-dirs:    src
   exposed-modules:   PhaseSpaceSums
-                     -- Formaldehyde.Invariant
+                     Formaldehyde.Invariant
                      Formaldehyde.RoamingRegion
                      Formaldehyde.BirdsNest
                      Formaldehyde.Potential
@@ -41,9 +41,18 @@ executable ReactionTime-exe
                      , HOCHHaskellTools
   default-language:    Haskell2010
 
-executable PotentialPicture
+executable PotentialPicture-exe
   hs-source-dirs:      app
   main-is:             PotentialPicture.hs
+  ghc-options:         -Wall
+  build-depends:       base
+                     , hmatrix
+                     , HOCHHaskellTools
+  default-language:    Haskell2010
+
+executable ToHOCPlane-exe
+  hs-source-dirs:      app
+  main-is:             ToHOCPlane.hs
   ghc-options:         -Wall
   build-depends:       base
                      , hmatrix

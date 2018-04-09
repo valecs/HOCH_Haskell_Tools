@@ -4,7 +4,8 @@ module Formaldehyde.Helpers (
   ,readTrajectoryTimes
   ,fileInput
   ,(#), (##@), (##), (##$)
-  ,cm, mass
+  ,cm
+  ,mapv 
   ,whichRoamer
   ,pathRoamer
   ,fmtDouble
@@ -46,6 +47,10 @@ g ##$ (c1,c2) = norm_2 $ g##(c1,c2)
 g ##@ cs = (foldl' (+) origin [(g # c) * (mass c) | c<-cs]) / massT
   where origin = 3|>repeat 0
         massT = massOf cs
+
+-- | applies the given function to each center in the c-vector
+mapv :: (Vector Double -> Vector Double) -> Vector Double -> Vector Double
+mapv f v = fromList $ concat $ map (toList.f) $ map (v#) [H1 ..]
 
 -- Returns the identiy of the hydrogen farthest from the center of mass
 whichRoamer :: Vector Double -> Center

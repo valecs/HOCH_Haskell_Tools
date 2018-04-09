@@ -5,15 +5,15 @@ Implements 2014.06.06:149
 module Formaldehyde.Invariant (
   toHOCPlane
   ,centerAndRotate
+  ,rotationFormula
   ) where
 
 import Numeric.LinearAlgebra
+import Formaldehyde.Data (Center(..))
+import Formaldehyde.Helpers (getCenter, cm)
 
 data Direction = Clockwise | AntiClockwise
                              deriving (Show, Eq)
-
-(@>) :: Vector Double -> Int -> Double
-(@>) v n = subVector n 1 v
 
 toCOM :: (Vector Double, Vector Double, Vector Double) -> Vector Double -> Vector Double
 toCOM (rH, rO, rC) r =
@@ -41,14 +41,6 @@ sign n
   | otherwise = error "foo"
 
 -- "rotation formula" from Goldstein (1980), p. 165
--- rotationFormula :: Vector Double -> Double -> Vector Double -> Vector Double
--- rotationFormula a cosPhi r = rotCP <> r
---                           where rotCP = (cosPhi * (ident 3))
---                                         + ((1 - cosPhi) * (outer a a)) -- (outer a b) forms the dyad ab
---                                         - (sinPhi * (crossMatrix a))
---                                   where sinPhi = sqrt $ 1 - cosPhi^2
-
--- "rotation formula" from Goldstein (1980), p. 165
 rotationFormula :: Vector Double -> Double -> Matrix Double
 rotationFormula a cosPhi = let
   i3 = ident 3 :: Matrix Double
@@ -59,16 +51,12 @@ rotationFormula a cosPhi = let
 
 -- (crossMatrix a) <> b = a x b
 crossMatrix :: Vector Double -> Matrix Double
-crossMatrix v = fromLists [[0, - v @> z, v @> y]
-                          ,[v @> z ,0,- v @> x]
-                          ,[-v @> y, v @> x,0]]
+crossMatrix v = fromLists [[0, - v ! z, v ! y]
+                          ,[v ! z ,0,- v ! x]
+                          ,[-v ! y, v ! x,0]]
   where x = 0
         y = 1
         z = 2
-
-
-cx :: Vector Double -> Vector Double -> Vector Double
-cx a b = (crossMatrix a) <> b
 
 transform1 :: (Vector Double, Vector Double, Vector Double) -> Vector Double -> Vector Double
 transform1 = toCOM
@@ -81,7 +69,7 @@ transform2 (rH', rO', rC') r' = let
   n = normdX rHC' rOC'
   a = normdX z n
   cosPhi = n <.> z
-  in (rotationFormula a cosPhi) <> r'
+  in (rotationFormula a cosPhi) #> r'
 
 transform3 :: (Vector Double, Vector Double, Vector Double) -> Vector Double -> Vector Double
 transform3 (_, rO'', rC'') r'' = let
@@ -89,25 +77,19 @@ transform3 (_, rO'', rC'') r'' = let
   x = 3 |> [1,0,0] :: Vector Double
   rOC'' = rO'' - rC''
   cosTheta = (rOC'' <.> y) / (norm_2 rOC'')
-  in (rotZ (sign $  rOC'' <.> x) cosTheta) <> r''
+  in (rotZ (sign $  rOC'' <.> x) cosTheta) #> r''
 
 -- returns (a x b) / |a x b|
 -- unless | a x b | = 0, in which case, we return |a x b|
 -- this does no harm in this application to rotation
 normdX :: Vector Double -> Vector Double -> Vector Double
+-- normdX a b = unitary $ cross a b
 normdX a b = let
-  cross = cx a b
-  norm = norm_2 cross
+  cx = cross a b
+  norm = norm_2 cx
   in if norm /= 0
-     then scale (1/norm) cross
-     else cross
---normdX a b = normalize $ cx a b
--- normdX a b = let
---   axb = cx a b
---   in axb / (norm_2 axb)
-
---normalize :: Vector Double -> Vector Double
---normalize v = scale (1/(norm_2 v)) v
+     then scale (1/norm) cx
+     else cx
 
 toHOCPlane :: (Vector Double, Vector Double, Vector Double) -> Vector Double -> Vector Double
 toHOCPlane c r =
@@ -117,35 +99,14 @@ toHOCPlane c r =
     h' = transform3 $ map3 (g'.f') c
   in h'.g'.f' $ r
 
--- testCase :: (Vector Double, Vector Double, Vector Double) -> Vector Double -> Vector Double
--- testCase c r =
---   let
---     g' = g $ c
---     h' = h $ map3 g' c
---   in h'.g' $ r
-
-data Center = H1 | O | C | H2
-              deriving (Show,Eq,Ord,Enum)
-
-getCenter:: Center -> Vector Double -> Vector Double
-getCenter H1 = subVector 0 3
-getCenter O  = subVector 3 3
-getCenter C  = subVector 6 3
-getCenter H2 = subVector 9 3
 
 whichNotRoamer :: Vector Double -> Center
 whichNotRoamer p = let
-  (rH1, rO, rC, rH2) = map4 (flip getCenter p) (H1,O,C,H2)
-  com = cm (rH1, rO, rC, rH2)
+  (rH1, _, _, rH2) = map4 (flip getCenter p) (H1,O,C,H2)
+  com = cm p
   in if (norm_2 $ rH1 - com) > (norm_2 $ rH2 - com)
      then H2
      else H1
-
-cm :: (Vector Double, Vector Double, Vector Double, Vector Double) -> Vector Double
-cm (rH1, rO, rC, rH2)= ((rH1 * mH) + (rO * mO) + (rC * mC) + (rH2 * mH)) / (mH + mO + mC + mH)
-  where mH = 1837.15
-        mO = 29156.95
-        mC = 21874.66
 
 configToVector :: (Vector Double, Vector Double, Vector Double, Vector Double) -> Vector Double
 configToVector = fromList . concat . list4 . (map4 toList)
