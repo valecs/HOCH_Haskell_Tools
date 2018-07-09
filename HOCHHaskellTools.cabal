@@ -41,6 +41,15 @@ executable ReactionTime-exe
                      , HOCHHaskellTools
   default-language:    Haskell2010
 
+executable BoundaryPlot-exe
+  hs-source-dirs:      app
+  main-is:             BoundaryPlot.hs
+  ghc-options:         -Wall
+  build-depends:       base
+                     , hmatrix
+                     , HOCHHaskellTools
+  default-language:    Haskell2010
+  
 executable PotentialPicture-exe
   hs-source-dirs:      app
   main-is:             PotentialPicture.hs
