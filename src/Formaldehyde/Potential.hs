@@ -1,4 +1,4 @@
-module Formaldehyde.Potential (potential, globalMinimum) where
+module Formaldehyde.Potential (potential, globalMinimum, boundary) where
 
 import Foreign (Ptr)
 import qualified Foreign.Marshal.Unsafe as FMU (unsafeLocalState)
@@ -27,3 +27,7 @@ foreign import ccall unsafe "potentialFFI.h getFormaldehydePotential"
 -- | Returns the energy of the given Vector
 potential :: Vector Double -> Double
 potential v = FMU.unsafeLocalState $ DVS.unsafeWith v c_getFormaldehydePotential
+
+-- | use like, e.g.: (HOCH.boundary 1e-4 el)
+boundary :: Double -> Double -> Vector Double -> Bool
+boundary delta el r = delta > abs ( 1 - potential r / el)

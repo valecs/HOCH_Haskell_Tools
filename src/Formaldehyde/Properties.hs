@@ -4,10 +4,16 @@ module Formaldehyde.Properties (
   ,massOf
   ,massTotal
   ,massM
+  ,wn2hartree
   ) where
 
 import Formaldehyde.Data (Center(..))
 import Numeric.LinearAlgebra
+
+-- wavenumbers per hartree
+wn2hartree :: Double
+wn2hartree = 219474.6313705
+
 
 mass :: (Fractional a) => Center -> a
 mass H1 = 1837.15

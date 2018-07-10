@@ -41,6 +41,24 @@ executable ReactionTime-exe
                      , HOCHHaskellTools
   default-language:    Haskell2010
 
+executable ExtractBirdExit-exe
+  hs-source-dirs:      app
+  main-is:             ExtractBirdExit.hs
+  ghc-options:         -Wall
+  build-depends:       base
+                     , hmatrix
+                     , HOCHHaskellTools
+  default-language:    Haskell2010
+
+executable Path2HHCOHH-exe
+  hs-source-dirs:      app
+  main-is:             Path2HHCOHH.hs
+  ghc-options:         -Wall
+  build-depends:       base
+                     , hmatrix
+                     , HOCHHaskellTools
+  default-language:    Haskell2010
+
 executable BoundaryPlot-exe
   hs-source-dirs:      app
   main-is:             BoundaryPlot.hs

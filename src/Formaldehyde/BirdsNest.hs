@@ -1,17 +1,18 @@
 module Formaldehyde.BirdsNest(
   inBirdsNest
   ,filter'
+  ,toHHCOHH
   ) where
 
 --import Data.List (foldl')
-import Numeric.LinearAlgebra (Vector, norm_2)
+import Numeric.LinearAlgebra (Vector, norm_2, fromList)
 import Formaldehyde.Helpers
 import Formaldehyde.Data
 
 
 inBirdsNest :: Vector Double -> Bool
-inBirdsNest v = (norm_2 $ v##@[C,O] - v##@[H1,H2]) < cohhMax &&
-                v##$(H1,H2) < hhMax where
+inBirdsNest v = norm_2 ( v ##@ [C,O] - v ##@ [H1,H2]) < cohhMax &&
+                v ##$ (H1,H2) < hhMax where
                   hhMax   = 5.86728
                   cohhMax = 3.420
 
@@ -25,3 +26,9 @@ filter' _ [] = []
 filter' p (x:xs)
   | p x       = x : filter' p xs
   | otherwise = []
+
+
+toHHCOHH :: Vector Double -> Vector Double
+toHHCOHH v = fromList [rCOHH, rHH] where
+  rCOHH = norm_2 $ (v ##@ [C,O]) - (v ##@ [H1,H2])
+  rHH   = v ##$ (H1,H2)
