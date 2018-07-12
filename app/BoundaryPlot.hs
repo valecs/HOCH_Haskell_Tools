@@ -1,7 +1,6 @@
 import Formaldehyde.Helpers
 import Formaldehyde.Properties (wn2hartree)
 import qualified Formaldehyde.Potential as HOCH (boundary)
-import Numeric.LinearAlgebra
 import Formaldehyde.BirdsNest (inBirdsNest, filter', toHHCOHH)
 
 import System.Environment (getArgs)

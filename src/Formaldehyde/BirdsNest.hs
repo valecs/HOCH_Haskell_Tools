@@ -2,10 +2,13 @@ module Formaldehyde.BirdsNest(
   inBirdsNest
   ,filter'
   ,toHHCOHH
+  ,toHHCOHHa
+  ,toHHCOHHb
+  ,dihedral
   ) where
 
 --import Data.List (foldl')
-import Numeric.LinearAlgebra (Vector, norm_2, fromList)
+import Numeric.LinearAlgebra (Vector, norm_2, fromList, cross, unitary, dot)
 import Formaldehyde.Helpers
 import Formaldehyde.Data
 
@@ -28,7 +31,41 @@ filter' p (x:xs)
   | otherwise = []
 
 
+-- some useful coordinate transformations
+
+-- | to the two jacobi coordinates rH2-CO, rH-H
 toHHCOHH :: Vector Double -> Vector Double
 toHHCOHH v = fromList [rCOHH, rHH] where
   rCOHH = norm_2 $ (v ##@ [C,O]) - (v ##@ [H1,H2])
   rHH   = v ##$ (H1,H2)
+
+
+-- | to the two jacobi coordinates rH2-CO, rH-H, with the dihedral
+toHHCOHHa :: Vector Double -> [Double]
+toHHCOHHa v = [rCOHH, rHH, a ] where
+  rCOHH = norm_2 $ (v ##@ [C,O]) - (v ##@ [H1,H2])
+  rHH   = v ##$ (H1,H2)
+  a = dihedral v
+
+-- | to the two jacobi coordinates rH2-CO, rH-H, with angle between the H2 and CO
+toHHCOHHb :: Vector Double -> [Double]
+toHHCOHHb v = [rCOHH, rHH, b ] where
+  rCOHH = norm_2 $ (v ##@ [C,O]) - (v ##@ [H1,H2])
+  rHH   = v ##$ (H1,H2)
+  -- abs reflects the indistinguishability of the the two H atoms
+  b = abs $ (unitary v ## (H1, H2)) `dot` (unitary v ## (C, O))
+
+
+(∧) :: Vector Double -> Vector Double -> Vector Double 
+(∧) = cross
+
+-- | computes the cosine of the dihedral angle formed by the out of plane H
+dihedral :: Vector Double -> Double
+dihedral v = cosa where
+  cosa = (unitary (a ∧ b)) `dot` (unitary (a ∧ c)) where
+    a = v ## (O, C)
+    b = v ## (C, H1)
+    c = v ## (C, H2)
+    
+    
+    

@@ -35,6 +35,7 @@ getCenter H2 = subVector 9 3
 g # c = getCenter c g
 
 -- | G ## (A,B) -> rB - rA
+-- G ## (A,B) points from A to B
 (##) :: Vector Double -> (Center, Center) ->  Vector Double
 g ## (c1,c2) = (g # c2) - (g # c1)
 
