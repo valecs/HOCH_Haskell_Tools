@@ -41,6 +41,14 @@ executable ReactionTime-exe
                      , HOCHHaskellTools
   default-language:    Haskell2010
 
+executable BirdIncubationTime-exe
+  hs-source-dirs:      app
+  main-is:             BirdIncubationTime.hs
+  build-depends:       base
+                     , hmatrix
+                     , HOCHHaskellTools
+  default-language:    Haskell2010
+
 executable ExtractBirdExit-exe
   hs-source-dirs:      app
   main-is:             ExtractBirdExit.hs

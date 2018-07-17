@@ -24,6 +24,7 @@ inBirdsNest v = norm_2 ( v ##@ [C,O] - v ##@ [H1,H2]) < cohhMax &&
 -- TODO: re-write with foldl'
 -- >>> filter' (<5) [1,3,5,7,5,3,1]
 -- [1,3]
+-- use like, e.g.: filter' inBirdsNest
 filter' :: (a -> Bool) -> [a] -> [a]
 filter' _ [] = []
 filter' p (x:xs)
